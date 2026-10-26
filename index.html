@@ -3,111 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GNC vs Uber vs Colectivo</title>
+    <title>Calculadora de Ganancias Uber</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .glass {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 10px; }
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
     </style>
 </head>
-<body class="min-h-screen bg-cover bg-center bg-fixed font-sans text-gray-800 p-4 md:p-8" 
-      style="background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2070&auto=format&fit=crop');">
+<body class="min-h-screen bg-cover bg-center bg-fixed font-sans text-gray-900 p-4 md:p-8" 
+      style="background-image: url('https://images.unsplash.com/photo-1499856871958-5b9627545d1a?q=80&w=2020&auto=format&fit=crop');">
 
-    <div class="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6">
+    <div class="max-w-4xl mx-auto flex flex-col md:flex-row gap-6">
         
-        <div class="w-full lg:w-1/3 flex flex-col gap-6">
+        <!-- Columna Izquierda: Calculadora -->
+        <div class="w-full md:w-1/2 flex flex-col gap-6">
             
-            <div class="glass p-6 rounded-3xl shadow-lg text-center">
-                <h1 class="text-3xl font-bold text-gray-900 mb-2"><i class="fa-solid fa-route text-green-600"></i> Mi Viaje</h1>
-                <p class="text-sm text-gray-600">Compara Auto, Uber y Colectivo</p>
+            <div class="glass p-6 rounded-3xl shadow-xl text-center border-t-4 border-t-green-500">
+                <h1 class="text-3xl font-black text-gray-900 mb-1"><i class="fa-brands fa-uber text-black"></i> Rentabilidad</h1>
+                <p class="text-sm text-gray-600 font-medium">Calcula tu ganancia neta por viaje</p>
             </div>
 
             <div class="glass p-6 rounded-3xl shadow-lg">
-                <h2 class="text-lg font-semibold mb-4"><i class="fa-solid fa-location-dot text-red-500"></i> Tu Ruta</h2>
+                <h2 class="text-lg font-bold mb-4 text-gray-800"><i class="fa-solid fa-calculator text-blue-500"></i> Datos del Viaje</h2>
                 
-                <div class="mb-4">
-                    <label class="block text-xs font-medium text-gray-700 mb-1">Origen</label>
-                    <input type="text" id="origen" placeholder="Ej: San Miguel de Tucumán" class="w-full p-2 rounded-xl border-none shadow-inner bg-white/80 focus:ring-2 focus:ring-green-400 outline-none">
+                <div class="grid grid-cols-2 gap-4 mb-5">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wide">Distancia (km)</label>
+                        <input type="number" id="distancia" step="0.1" oninput="guardarBorrador()" class="w-full p-4 rounded-xl border-none shadow-inner bg-gray-50 text-center font-black text-2xl focus:ring-2 focus:ring-green-400 outline-none transition" placeholder="0">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wide">Pago Uber ($)</label>
+                        <input type="number" id="precio_uber" oninput="guardarBorrador()" class="w-full p-4 rounded-xl border-none shadow-inner bg-gray-50 text-center font-black text-2xl text-blue-700 focus:ring-2 focus:ring-blue-400 outline-none transition" placeholder="0">
+                    </div>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-medium text-gray-700 mb-1">Destino</label>
-                    <input type="text" id="destino" placeholder="Ej: Terminal de Ómnibus" class="w-full p-2 rounded-xl border-none shadow-inner bg-white/80 focus:ring-2 focus:ring-green-400 outline-none">
-                </div>
+                <details class="bg-white/60 rounded-xl mb-4 group shadow-sm border border-gray-100">
+                    <summary class="text-xs font-bold text-gray-700 p-3 cursor-pointer hover:bg-white/80 rounded-xl transition flex justify-between items-center">
+                        <span><i class="fa-solid fa-gear text-gray-500 mr-1"></i> Costos del Vehículo (GNC + 40%)</span>
+                        <i class="fa-solid fa-chevron-down text-gray-400 text-[10px]"></i>
+                    </summary>
+                    <div class="p-4 pt-2 grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-600 mb-1">Precio GNC ($/m3)</label>
+                            <input type="number" id="precio_gnc" oninput="guardarAjustes()" class="w-full p-2 rounded-lg shadow-inner bg-gray-50 text-center text-sm font-semibold border-none" value="1000">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-600 mb-1">Rendimiento (km/m3)</label>
+                            <input type="number" id="rendimiento" oninput="guardarAjustes()" class="w-full p-2 rounded-lg shadow-inner bg-gray-50 text-center text-sm font-semibold border-none" value="10">
+                        </div>
+                    </div>
+                </details>
+
+                <button onclick="calcularGanancia()" class="w-full bg-black text-white font-black py-4 rounded-xl hover:bg-gray-800 transition shadow-xl text-lg transform hover:scale-[1.02]">
+                    CALCULAR GANANCIA
+                </button>
             </div>
-
-            <div class="glass p-6 rounded-3xl shadow-lg">
-                <h2 class="text-lg font-semibold mb-4"><i class="fa-solid fa-wallet text-yellow-600"></i> Datos del Viaje</h2>
-                
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">Distancia (km)</label>
-                        <input type="number" id="distancia" step="0.1" class="w-full p-2 rounded-xl border-none shadow-inner bg-white/80 text-center font-bold text-lg" value="0">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">Tarifa Uber ($)</label>
-                        <input type="number" id="precio_uber" class="w-full p-2 rounded-xl border-none shadow-inner bg-white/80 text-center font-bold text-lg text-blue-600" placeholder="0">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-3 gap-2 mb-2">
-                    <div>
-                        <label class="block text-[10px] font-medium text-gray-700 mb-1">Precio GNC ($)</label>
-                        <input type="number" id="precio_gnc" oninput="guardarAjustes()" class="w-full p-2 rounded-xl border-none shadow-inner bg-white/80 text-center text-sm" value="1000">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-medium text-gray-700 mb-1">Rend. (km/m3)</label>
-                        <input type="number" id="rendimiento" oninput="guardarAjustes()" class="w-full p-2 rounded-xl border-none shadow-inner bg-white/80 text-center text-sm" value="10">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-medium text-gray-700 mb-1">Boleto Col. ($)</label>
-                        <input type="number" id="precio_colectivo" oninput="guardarAjustes()" class="w-full p-2 rounded-xl border-none shadow-inner bg-white/80 text-center text-sm" value="690">
-                    </div>
-                </div>
-                
-                <p class="text-[10px] text-gray-500 leading-tight mt-2">* Costo Auto = GNC + 20% extra. Costo Colectivo = Boleto + 5% extra.</p>
-            </div>
-            
-            <button onclick="comparar()" class="w-full bg-gray-900 text-white font-bold py-3 rounded-xl hover:bg-gray-800 transition shadow-lg text-lg">
-                Comparar Costos
-            </button>
         </div>
 
-        <div class="w-full lg:w-2/3 flex flex-col gap-6">
+        <!-- Columna Derecha: Resultados y Registo -->
+        <div class="w-full md:w-1/2 flex flex-col gap-6">
             
-            <div id="resultado-box" class="glass p-6 md:p-8 rounded-3xl shadow-lg flex flex-col items-center justify-center text-center hidden">
-                <h2 class="text-2xl font-bold mb-6 text-gray-800">Resumen de Costos</h2>
+            <div id="resultado-box" class="glass p-6 md:p-8 rounded-3xl shadow-xl flex flex-col text-center hidden relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-400 to-blue-500"></div>
                 
-                <div class="flex flex-col md:flex-row w-full justify-between items-center gap-3 mb-6">
-                    <div class="bg-white/60 p-4 rounded-2xl w-full shadow-sm border border-white">
-                        <p class="text-sm font-semibold text-gray-600 mb-1"><i class="fa-solid fa-car text-green-600"></i> Auto</p>
-                        <p id="res-auto" class="text-2xl font-bold text-gray-800">$0</p>
+                <h2 class="text-xl font-bold mb-5 text-gray-800 uppercase tracking-widest text-sm">Resumen Financiero</h2>
+                
+                <div class="flex flex-col gap-3 mb-6">
+                    <div class="flex justify-between items-center bg-white/70 p-3 rounded-lg shadow-sm">
+                        <span class="text-sm font-semibold text-gray-600"><i class="fa-brands fa-uber text-black w-5"></i> Ingreso Bruto</span>
+                        <span id="res-ingreso" class="font-black text-lg text-gray-900">$0</span>
                     </div>
-                    <div class="bg-white/60 p-4 rounded-2xl w-full shadow-sm border border-white">
-                        <p class="text-sm font-semibold text-gray-600 mb-1"><i class="fa-brands fa-uber text-black"></i> Uber</p>
-                        <p id="res-uber" class="text-2xl font-bold text-gray-800">$0</p>
-                    </div>
-                    <div class="bg-white/60 p-4 rounded-2xl w-full shadow-sm border border-white">
-                        <p class="text-sm font-semibold text-gray-600 mb-1"><i class="fa-solid fa-bus text-blue-500"></i> Colectivo</p>
-                        <p id="res-colectivo" class="text-2xl font-bold text-gray-800">$0</p>
+                    <div class="flex justify-between items-center bg-red-50/70 p-3 rounded-lg shadow-sm border border-red-100">
+                        <span class="text-sm font-semibold text-red-600"><i class="fa-solid fa-gas-pump w-5"></i> Costo Operativo (GNC+40%)</span>
+                        <span id="res-costo" class="font-black text-lg text-red-600">-$0</span>
                     </div>
                 </div>
 
-                <div id="veredicto-container" class="w-full p-4 rounded-xl text-white font-bold text-xl shadow-md">
+                <div id="veredicto-container" class="w-full p-5 rounded-2xl text-white font-black text-2xl shadow-inner flex flex-col justify-center items-center">
+                    <span class="text-xs uppercase tracking-widest font-bold opacity-80 mb-1">Ganancia Neta (Bolsillo)</span>
+                    <span id="res-neta" class="text-4xl drop-shadow-md">$0</span>
+                    <span id="res-margen" class="text-sm font-semibold bg-white/20 px-3 py-1 rounded-full mt-2 hidden">Margen: 0%</span>
                 </div>
             </div>
 
             <div class="glass p-6 rounded-3xl shadow-lg flex-grow">
-                <h2 class="text-lg font-semibold mb-4"><i class="fa-solid fa-clock-rotate-left text-blue-500"></i> Últimos Viajes Guardados</h2>
-                <div id="historial-lista" class="flex flex-col gap-3">
-                    <p class="text-sm text-gray-500 text-center italic mt-4">Aún no hay viajes guardados.</p>
+                <h2 class="text-sm font-bold mb-4 uppercase tracking-widest text-gray-700"><i class="fa-solid fa-list-ul text-blue-500 mr-1"></i> Registro de Viajes</h2>
+                <div id="historial-lista" class="flex flex-col gap-3 max-h-[300px] overflow-y-auto pr-2">
+                    <p class="text-sm text-gray-500 text-center italic mt-4">Aún no hay viajes registrados.</p>
                 </div>
             </div>
         </div>
@@ -117,24 +107,39 @@
     <script>
         window.onload = () => {
             cargarAjustes();
+            cargarBorrador();
             cargarHistorial();
         };
 
         function guardarAjustes() {
             const ajustes = {
                 gnc: document.getElementById('precio_gnc').value,
-                rendimiento: document.getElementById('rendimiento').value,
-                colectivo: document.getElementById('precio_colectivo').value
+                rendimiento: document.getElementById('rendimiento').value
             };
-            localStorage.setItem('viajeAjustesOSM2', JSON.stringify(ajustes));
+            localStorage.setItem('uberDriverAjustes', JSON.stringify(ajustes));
         }
 
         function cargarAjustes() {
-            const ajustes = JSON.parse(localStorage.getItem('viajeAjustesOSM2'));
+            const ajustes = JSON.parse(localStorage.getItem('uberDriverAjustes'));
             if (ajustes) {
                 if(ajustes.gnc) document.getElementById('precio_gnc').value = ajustes.gnc;
                 if(ajustes.rendimiento) document.getElementById('rendimiento').value = ajustes.rendimiento;
-                if(ajustes.colectivo) document.getElementById('precio_colectivo').value = ajustes.colectivo;
+            }
+        }
+
+        function guardarBorrador() {
+            const borrador = {
+                distancia: document.getElementById('distancia').value,
+                precio_uber: document.getElementById('precio_uber').value
+            };
+            localStorage.setItem('uberDriverBorrador', JSON.stringify(borrador));
+        }
+
+        function cargarBorrador() {
+            const borrador = JSON.parse(localStorage.getItem('uberDriverBorrador'));
+            if (borrador) {
+                if(borrador.distancia) document.getElementById('distancia').value = borrador.distancia;
+                if(borrador.precio_uber) document.getElementById('precio_uber').value = borrador.precio_uber;
             }
         }
 
@@ -142,92 +147,97 @@
             return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(monto);
         }
 
-        function comparar() {
-            const origen = document.getElementById('origen').value || "Origen manual";
-            const destino = document.getElementById('destino').value || "Destino manual";
+        function autocompletarDesdeHistorial(distancia) {
+            document.getElementById('distancia').value = distancia;
+            document.getElementById('precio_uber').value = ""; 
+            document.getElementById('precio_uber').focus();
+            guardarBorrador();
+        }
+
+        function calcularGanancia() {
             const distancia = parseFloat(document.getElementById('distancia').value);
-            const precio_uber = parseFloat(document.getElementById('precio_uber').value);
+            const tarifa_uber = parseFloat(document.getElementById('precio_uber').value);
             const precio_gnc = parseFloat(document.getElementById('precio_gnc').value);
             const rendimiento = parseFloat(document.getElementById('rendimiento').value);
-            const precio_colectivo_base = parseFloat(document.getElementById('precio_colectivo').value);
 
-            if (!distancia || distancia <= 0 || !precio_uber || precio_uber <= 0 || !precio_colectivo_base) {
-                alert("Por favor, completa la distancia, tarifa de Uber y Boleto.");
+            if (!distancia || distancia <= 0 || !tarifa_uber || tarifa_uber <= 0) {
+                alert("Por favor, ingresa los kilómetros del viaje y el pago de Uber.");
                 return;
             }
 
-            const costo_auto = ((distancia / rendimiento) * precio_gnc) * 1.20;
-            const costo_colectivo = precio_colectivo_base * 1.05;
+            // Costo operativo: GNC gastado + 40% de mantenimiento
+            const costo_operativo = ((distancia / rendimiento) * precio_gnc) * 1.40;
+            const ganancia_neta = tarifa_uber - costo_operativo;
+            const margen_porcentaje = ((ganancia_neta / tarifa_uber) * 100).toFixed(0);
 
+            // Actualizar Interfaz
             document.getElementById('resultado-box').classList.remove('hidden');
-            document.getElementById('res-auto').innerText = formatMonto(costo_auto);
-            document.getElementById('res-uber').innerText = formatMonto(precio_uber);
-            document.getElementById('res-colectivo').innerText = formatMonto(costo_colectivo);
-
-            const opciones = [
-                { nombre: 'Auto', costo: costo_auto, icon: 'fa-car', color: 'bg-green-500' },
-                { nombre: 'Uber', costo: precio_uber, icon: 'fa-uber', color: 'bg-black' },
-                { nombre: 'Colectivo', costo: costo_colectivo, icon: 'fa-bus', color: 'bg-blue-500' }
-            ];
+            document.getElementById('res-ingreso').innerText = formatMonto(tarifa_uber);
+            document.getElementById('res-costo').innerText = "-" + formatMonto(costo_operativo);
             
-            opciones.sort((a, b) => a.costo - b.costo);
-            const ganador = opciones[0];
-            const segundo = opciones[1];
-            const ahorro = segundo.costo - ganador.costo;
-
             const veredictoCont = document.getElementById('veredicto-container');
-            veredictoCont.className = `w-full p-4 rounded-xl text-white font-bold text-xl shadow-md ${ganador.color}`;
-            veredictoCont.innerHTML = `<i class="fa-solid ${ganador.icon}"></i> Conviene ir en ${ganador.nombre}.<br><span class="text-sm font-normal">Ahorras ${formatMonto(ahorro)} respecto a la segunda mejor opción.</span>`;
+            const resNeta = document.getElementById('res-neta');
+            const resMargen = document.getElementById('res-margen');
 
-            guardarViaje(origen, destino, costo_auto, precio_uber, costo_colectivo, ganador.nombre);
+            resNeta.innerText = formatMonto(ganancia_neta);
+            resMargen.innerText = `Margen de ganancia: ${margen_porcentaje}%`;
+            resMargen.classList.remove('hidden');
+
+            if (ganancia_neta > 0) {
+                veredictoCont.className = "w-full p-5 rounded-2xl text-white font-black text-2xl shadow-inner flex flex-col justify-center items-center bg-green-500";
+            } else {
+                veredictoCont.className = "w-full p-5 rounded-2xl text-white font-black text-2xl shadow-inner flex flex-col justify-center items-center bg-red-500";
+                resMargen.innerText = "VIAJE A PÉRDIDA";
+            }
+
+            guardarViaje(distancia, tarifa_uber, costo_operativo, ganancia_neta);
         }
 
-        function guardarViaje(origen, destino, costoAuto, costoUber, costoColectivo, ganador) {
-            let historial = JSON.parse(localStorage.getItem('gncUberHistorial')) || [];
+        function guardarViaje(distancia, ingreso, costo, neta) {
+            let historial = JSON.parse(localStorage.getItem('uberDriverHistorial')) || [];
             
             const nuevoViaje = {
                 fecha: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' }),
-                origen: origen,
-                destino: destino,
-                auto: costoAuto,
-                uber: costoUber,
-                colectivo: costoColectivo,
-                ganador: ganador
+                distancia: distancia,
+                ingreso: ingreso,
+                costo: costo,
+                neta: neta
             };
 
             historial.unshift(nuevoViaje); 
-            if (historial.length > 4) historial.pop();
+            if (historial.length > 10) historial.pop();
 
-            localStorage.setItem('gncUberHistorial', JSON.stringify(historial));
+            localStorage.setItem('uberDriverHistorial', JSON.stringify(historial));
             cargarHistorial();
         }
 
         function cargarHistorial() {
             const lista = document.getElementById('historial-lista');
-            let historial = JSON.parse(localStorage.getItem('gncUberHistorial')) || [];
+            let historial = JSON.parse(localStorage.getItem('uberDriverHistorial')) || [];
             
             if (historial.length === 0) return;
 
             lista.innerHTML = '';
             historial.forEach(v => {
-                let badgeColor = '';
-                if(v.ganador === 'Auto') badgeColor = 'bg-green-100 text-green-700';
-                else if(v.ganador === 'Uber') badgeColor = 'bg-gray-200 text-gray-800';
-                else badgeColor = 'bg-blue-100 text-blue-700';
+                const esPositivo = v.neta > 0;
+                const colorNeta = esPositivo ? 'text-green-600' : 'text-red-600';
+                const bgIcon = esPositivo ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600';
 
                 const html = `
-                <div class="bg-white/80 p-3 rounded-xl shadow-sm border border-white flex justify-between items-center">
-                    <div class="w-full">
-                        <div class="flex justify-between items-start w-full">
-                            <p class="text-xs font-bold text-gray-800 truncate"><i class="fa-solid fa-map-pin text-red-500 mr-1"></i> ${v.destino}</p>
-                            <span class="px-2 py-0.5 ml-2 rounded-md text-[10px] font-bold ${badgeColor} whitespace-nowrap">${v.ganador}</span>
+                <div onclick="autocompletarDesdeHistorial(${v.distancia})" class="bg-white/90 p-3 rounded-xl shadow-sm border border-gray-100 flex justify-between items-center cursor-pointer hover:bg-gray-50 hover:scale-[1.02] transition transform">
+                    <div class="flex items-center gap-3 w-full">
+                        <div class="${bgIcon} w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0">
+                            ${v.distancia}k
                         </div>
-                        <p class="text-[10px] text-gray-500 truncate mb-1">Desde: ${v.origen}</p>
-                        
-                        <div class="flex gap-3 text-[10px] font-medium mt-2 bg-gray-50 p-1.5 rounded-lg border">
-                            <span class="${v.ganador === 'Auto' ? 'font-bold text-green-700' : 'opacity-70'}"><i class="fa-solid fa-car"></i> ${formatMonto(v.auto)}</span>
-                            <span class="${v.ganador === 'Uber' ? 'font-bold text-black' : 'opacity-70'}"><i class="fa-brands fa-uber"></i> ${formatMonto(v.uber)}</span>
-                            <span class="${v.ganador === 'Colectivo' ? 'font-bold text-blue-700' : 'opacity-70'}"><i class="fa-solid fa-bus"></i> ${formatMonto(v.colectivo)}</span>
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-center">
+                                <p class="text-xs font-bold text-gray-500 uppercase">${v.fecha}</p>
+                                <span class="font-black text-sm ${colorNeta}">${formatMonto(v.neta)}</span>
+                            </div>
+                            <div class="flex justify-between text-[11px] font-medium mt-1">
+                                <span class="text-gray-700">Cobrado: ${formatMonto(v.ingreso)}</span>
+                                <span class="text-red-500">Costo: ${formatMonto(v.costo)}</span>
+                            </div>
                         </div>
                     </div>
                 </div>`;
